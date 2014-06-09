@@ -1,0 +1,21 @@
+{
+    "name": "letsdoit",
+    "version": "0.0.1",
+    "dependencies": {
+        "koa": "*",
+        "koa-browserify": "*",
+        "koa-static": "*",
+        "reactify": "*",
+        "engine.io": "*",
+
+        "react": "*",
+        "engine.io-client": "*",
+        "react-router-component": "*"
+    },
+    "scripts": {
+        "start": "node --harmony server.js"
+    },
+    "engines": {
+        "node": ">= 0.11.0"
+    }
+}
