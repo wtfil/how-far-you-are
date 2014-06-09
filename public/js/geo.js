@@ -1,4 +1,6 @@
-var R = 6378137,
+var EventEmiter = require('./event-emiter'),
+    emiter = new EventEmiter(),
+    R = 6378137,
     TO_RAD = Math.PI / 180;
 
 var options = {
@@ -6,8 +8,6 @@ var options = {
     timeout: 5000,
     maximumAge: 0
 };
-
-var onChangeHandler;
 
 function onError(e) {
     console.error(e);
@@ -34,6 +34,31 @@ function getFromHash() {
     };
 }
 
+function geocode(coords, done) {
+    var url = 'http://geocode-maps.yandex.ru/1.x/?lang=ru&format=json',
+        ll = coords.longitude + ',' + coords.latitude,
+        xhr = new XMLHttpRequest();
+    url += '&geocode=' + ll;
+
+    xhr.onload = function (r) {
+        if (xhr.readyState !== 4) {
+            return;
+        }
+        var response = xhr.responseText;
+        try {
+            response = JSON.parse(response);
+        } catch(e) {}; 
+        var r = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+        done(r);
+    }
+    xhr.onerror = function (e) {
+        console.log(e);
+    }
+    xhr.open('get', url);
+    xhr.send();
+    console.log(url);
+}
+
 
 /*
 navigator.geolocation.watchPosition(function (p) {
@@ -42,31 +67,22 @@ navigator.geolocation.watchPosition(function (p) {
     }
 }, onError, options);
 */
-var last;
+var last = {coords: {latitude: 0, longitude: 0}};
 setInterval(function () {
+    var hash = getFromHash();
+    if (hash) {
+        return emiter.emit('position', hash);
+    }
     navigator.geolocation.getCurrentPosition(function (p) {
         last = p;
-        if (onChangeHandler) {
-            onChangeHandler(p);
-        }
+        emiter.emit('position', p);
     })
-}, 1000);
+}, 3000);
 
-module.exports = {
-    watch: function (fn) {
-        onChangeHandler = fn;
-    },
-    get: function (done) {
-        var hash = getFromHash();
-        if (hash) {
-            return done(hash);
-        }
-        if (!last) {
-            return setTimeout(function () {
-                done(last);
-            }, 1100);
-        } 
-        done(last);
-    },
-    toMetrs: toMetrs
+module.exports = emiter;
+module.exports.toMetrs = toMetrs;
+module.exports.geocode = geocode;
+module.exports.get = function () {
+    var hash = getFromHash();
+    return hash || last;
 }
