@@ -66,36 +66,33 @@ module.exports =  React.createClass({
 
         joinRoom(this.props.id);
         this._onGeo = function (p) {
-            geo.geocode(p.coords, function (address) {
-                _this.setState({myAddress: address});
-            });
             socket.send(JSON.stringify({distance: p}));
         }
         geo.on('position', this._onGeo);
 
         socket.on('message', function (data) {
+            var remote;
+
             try {
-                var p1 = JSON.parse(data).distance;
+                remote = JSON.parse(data).distance;
             } catch(e){};
 
-            var p2 = geo.get();
+            geo.get(function (local) {
 
-            if (!p2) {
-                return;
-            }
+                if (!local) {
+                    return;
+                }
 
-            var d = geo.toMetrs(p1.coords, p2.coords);
-            
-            geo.geocode(p1.coords, function (address) {
+                var distance = geo.toMetrs(local, remote);
+
                 _this.setState({
-                    hisAddress: address
+                    distance: distance,
+                    local: local,
+                    remote: remote
                 });
+
             });
-            _this.setState({
-                distance: d,
-                me: p2.coords,
-                he: p1.coords
-            });
+
         });
 
         this._onCompas = function (alpha) {
@@ -111,15 +108,23 @@ module.exports =  React.createClass({
     },
 
     render: function () {
-        var s = this.state,
-            alpha = formatAlpha(s.me, s.he, s.alpha);
+        var s = this.state;
+
+        //TODO make better
+        if (!s.local || !s.remote) {
+            return <div className="full-screen">
+                <div className="position">waiting</div>
+            </div>
+        }
+
+        var alpha = formatAlpha(s.local, s.remote, s.alpha);
 
         return <div className="full-screen">
             <div className="full-screen__top">
-                <User color="#FE941E" address={s.hisAddress}/>
+                <User color="#FE941E" address={s.remote.address}/>
             </div>
             <div className="full-screen__bottom">
-                <User color="#3399FF" address={s.myAddress}/>
+                <User color="#3399FF" address={s.local.address}/>
             </div>
             <div className="position">
                 <div className="distance">

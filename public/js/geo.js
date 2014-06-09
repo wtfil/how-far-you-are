@@ -20,21 +20,23 @@ function toMetrs(coordsA, coordsB) {
     return R * Math.sqrt(Math.pow(dlat, 2), Math.pow(dlng, 2));
 }
 
-function getFromHash() {
+function getFromHash(done) {
     var hash = location.hash;
+
     if (hash.length < 2) {
-        return;
+        return done(null);
     }
+
     hash = hash.substr(1).split(',');
-    return {
-        coords: {
-            longitude: hash[0],
-            latitude: hash[1]
-        }
+    var coords = {
+        longitude: hash[0],
+        latitude: hash[1]
     };
+    done(coords);
 }
 
 function geocode(coords, done) {
+
     if (!coords) {
         return done('');
     }
@@ -73,19 +75,38 @@ navigator.geolocation.watchPosition(function (p) {
 /*var last = {coords: {latitude: 0, longitude: 0}};*/
 var last;
 setInterval(function () {
-    var hash = getFromHash();
-    if (hash) {
-        return emiter.emit('position', hash);
-    }
-    navigator.geolocation.getCurrentPosition(function (p) {
-        last = p;
-        emiter.emit('position', p);
-    })
+    getFromHash(function (hash) {
+        if (hash) {
+            return emiter.emit('location', hash);
+        }
+        navigator.geolocation.getCurrentPosition(function (p) {
+            emiter.emit('location', p.coords);
+        });
+    });
 }, 1000);
+
+emiter.on('location', function (p) {
+    geocode(p, function (address) {
+        last = {
+            latitude: p.latitude,
+            longitude: p.longitude,
+            address: address
+        };
+        emiter.emit('position', last);
+    });
+});
 
 module.exports = emiter;
 module.exports.toMetrs = toMetrs;
 module.exports.geocode = geocode;
-module.exports.get = function () {
-    return getFromHash() || last;
+module.exports.get = function (done) {
+    getFromHash(function (coords) {
+        if (coords) {
+            return geocode(coords, function (address) {
+                coords.address = address;
+                done(coords);
+            });
+        }
+        done(last);
+    });
 }
