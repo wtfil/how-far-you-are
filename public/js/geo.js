@@ -35,6 +35,10 @@ function getFromHash() {
 }
 
 function geocode(coords, done) {
+    if (!coords) {
+        return done('');
+    }
+
     var url = 'http://geocode-maps.yandex.ru/1.x/?lang=ru&format=json',
         ll = coords.longitude + ',' + coords.latitude,
         xhr = new XMLHttpRequest();
@@ -56,7 +60,6 @@ function geocode(coords, done) {
     }
     xhr.open('get', url);
     xhr.send();
-    console.log(url);
 }
 
 
@@ -67,7 +70,8 @@ navigator.geolocation.watchPosition(function (p) {
     }
 }, onError, options);
 */
-var last = {coords: {latitude: 0, longitude: 0}};
+/*var last = {coords: {latitude: 0, longitude: 0}};*/
+var last;
 setInterval(function () {
     var hash = getFromHash();
     if (hash) {
@@ -77,12 +81,11 @@ setInterval(function () {
         last = p;
         emiter.emit('position', p);
     })
-}, 3000);
+}, 1000);
 
 module.exports = emiter;
 module.exports.toMetrs = toMetrs;
 module.exports.geocode = geocode;
 module.exports.get = function () {
-    var hash = getFromHash();
-    return hash || last;
+    return getFromHash() || last;
 }

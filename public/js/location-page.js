@@ -30,9 +30,6 @@ function formatAlpha(c1, c2, alpha) {
     if (!c1 || !c2) {
         return 0;
     }
-    /*console.log('=============')*/
-    /*console.log(c1.latitude, c1.longitude);*/
-    /*console.log(c2.latitude, c2.longitude);*/
 
     var dlat = c2.latitude - c1.latitude,
         dlon = c2.longitude - c1.longitude,
@@ -46,16 +43,21 @@ function formatAlpha(c1, c2, alpha) {
     }
 
     /*return alpha;*/
-    return a * 180 / Math.PI;
-    /*return a * 180 / Math.PI + alpha;*/
+    /*return a * 180 / Math.PI;*/
+    return a * 180 / Math.PI + alpha;
 }
+
+var colorOrder = [
+    '#FE941E'
+];
 
 module.exports =  React.createClass({
 
     getInitialState: function () {
         return {
+            alpha: 0,
             distance: 0,
-            alpha: 0.1
+            trackers: [1,2]
         };
     },
 
@@ -64,6 +66,9 @@ module.exports =  React.createClass({
 
         joinRoom(this.props.id);
         this._onGeo = function (p) {
+            geo.geocode(p.coords, function (address) {
+                _this.setState({myAddress: address});
+            });
             socket.send(JSON.stringify({distance: p}));
         }
         geo.on('position', this._onGeo);
@@ -73,13 +78,19 @@ module.exports =  React.createClass({
                 var p1 = JSON.parse(data).distance;
             } catch(e){};
 
-            var p2 = geo.get(),
-                d = geo.toMetrs(p1.coords, p2.coords);
+            var p2 = geo.get();
+
+            if (!p2) {
+                return;
+            }
+
+            var d = geo.toMetrs(p1.coords, p2.coords);
             
             geo.geocode(p1.coords, function (address) {
-                console.log(address);
+                _this.setState({
+                    hisAddress: address
+                });
             });
-
             _this.setState({
                 distance: d,
                 me: p2.coords,
@@ -104,8 +115,12 @@ module.exports =  React.createClass({
             alpha = formatAlpha(s.me, s.he, s.alpha);
 
         return <div className="full-screen">
-            <User color="#FE941E" coords={s.he}/>
-            <User color="#3399FF" coords={s.me}/>
+            <div className="full-screen__top">
+                <User color="#FE941E" address={s.hisAddress}/>
+            </div>
+            <div className="full-screen__bottom">
+                <User color="#3399FF" address={s.myAddress}/>
+            </div>
             <div className="position">
                 <div className="distance">
                     {formatDistance(this.state.distance)}
