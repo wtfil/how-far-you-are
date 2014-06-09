@@ -74,7 +74,9 @@ body, html, .app
 }
 .compas__arrow
 {
-    border-bottom: 20px solid #FE941E;
+    border-bottom-width: 20px;
+    border-bottom-style: solid;
+
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     margin: auto;

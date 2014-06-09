@@ -72,7 +72,7 @@ navigator.geolocation.watchPosition(function (p) {
     }
 }, onError, options);
 */
-/*var last = {coords: {latitude: 0, longitude: 0}};*/
+
 var last;
 setInterval(function () {
     getFromHash(function (hash) {

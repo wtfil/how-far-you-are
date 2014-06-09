@@ -3,7 +3,7 @@ var React = require('react'),
     User = require('./user-icon'),
     eio = require('engine.io-client'),
     geo = require('./geo'),
-    compas = require('./compas');
+    Compas = require('./compas-component');
 
 var socket = eio.Socket('ws://' + location.host);
 
@@ -25,39 +25,18 @@ function formatDistance(d) {
     }
 }
 
-function formatAlpha(c1, c2, alpha) {
-
-    if (!c1 || !c2) {
-        return 0;
-    }
-
-    var dlat = c2.latitude - c1.latitude,
-        dlon = c2.longitude - c1.longitude,
-        a = Math.atan(dlon / dlat);
-
-    if (a < 0) {
-        a += Math.PI;
-    }
-    if (dlat < 0) {
-        a += Math.PI;
-    }
-
-    /*return alpha;*/
-    /*return a * 180 / Math.PI;*/
-    return a * 180 / Math.PI + alpha;
-}
-
 var colorOrder = [
-    '#FE941E'
+    '#FE941E',
+    '#009933',
+    '#996600'
 ];
 
 module.exports =  React.createClass({
 
     getInitialState: function () {
         return {
-            alpha: 0,
-            distance: 0,
-            trackers: [1,2]
+            local: null,
+            remote: {}
         };
     },
 
@@ -65,74 +44,74 @@ module.exports =  React.createClass({
         var _this = this;
 
         joinRoom(this.props.id);
-        this._onGeo = function (p) {
-            socket.send(JSON.stringify({distance: p}));
+        this._onGeo = function (local) {
+            _this.setState({
+                local: local
+            });
+
+            socket.send(JSON.stringify({
+                position: local
+            }));
+
         }
         geo.on('position', this._onGeo);
 
         socket.on('message', function (data) {
-            var remote;
+            var remote = _this.state.remote;
 
             try {
-                remote = JSON.parse(data).distance;
+                data = JSON.parse(data);
             } catch(e){};
+            console.log(data);
 
-            geo.get(function (local) {
+            if (data.position) {
+                remote[data.socketId] = data.position;
+            } else if (data.disconnected) {
+                delete remote[data.socketId];
+            }
 
-                if (!local) {
-                    return;
-                }
-
-                var distance = geo.toMetrs(local, remote);
-
-                _this.setState({
-                    distance: distance,
-                    local: local,
-                    remote: remote
-                });
-
+            _this.setState({
+                remote: remote
             });
+
 
         });
 
-        this._onCompas = function (alpha) {
-            _this.setState({alpha: alpha});
-        }
-
-        compas.on('alpha', this._onCompas);
     },
 
     componentWillUnmount: function () {
-        compas.off('alpha', this._onCompas);
         geo.off('distance', this._onGeo);
     },
 
     render: function () {
-        var s = this.state;
+        var s = this.state,
+            remote = s.remote[Object.keys(s.remote)[0]];
 
         //TODO make better
-        if (!s.local || !s.remote) {
-            return <div className="full-screen">
-                <div className="position">waiting</div>
-            </div>
+        if (!s.local || !remote) {
+            return <div></div>
         }
 
-        var alpha = formatAlpha(s.local, s.remote, s.alpha);
+        var distance = geo.toMetrs(s.local, remote),
+            ids = Object.keys(s.remote);
+        distance = formatDistance(distance);
 
         return <div className="full-screen">
             <div className="full-screen__top">
-                <User color="#FE941E" address={s.remote.address}/>
+                {ids.map(function (id, index) {
+                    return <User color={colorOrder[index]} address={s.remote[id].address}/>
+                })}
             </div>
             <div className="full-screen__bottom">
                 <User color="#3399FF" address={s.local.address}/>
             </div>
             <div className="position">
-                <div className="distance">
-                    {formatDistance(this.state.distance)}
+                <div>
+                    {ids.map(function (id, index) {
+                        return <Compas local={s.local} remote={s.remote[id]} color={colorOrder[index]} />
+                    })}
                 </div>
-                <div className="compas" style={{'-webkit-transform': 'rotate(' + alpha + 'deg)'}}>
-                    <div className="compas__arrow"></div>
-                </div>
+                <div className="distance">{distance}</div>
             </div>
         </div>
     }
