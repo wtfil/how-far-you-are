@@ -1,4 +1,5 @@
 var EventEmiter = require('./event-emiter'),
+    profile = require('./profile'),
     emiter = new EventEmiter(),
     R = 6378137,
     TO_RAD = Math.PI / 180;
@@ -90,7 +91,9 @@ emiter.on('location', function (p) {
         last = {
             latitude: p.latitude,
             longitude: p.longitude,
-            address: address
+            address: address,
+            // bad-bad
+            userName: profile.userName
         };
         emiter.emit('position', last);
     });

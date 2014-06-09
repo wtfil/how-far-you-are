@@ -7,9 +7,22 @@ body, html, .app
     font-family: "Helvetica Neue","Segoe UI",sans-serif;
 }
 
+.header
+{
+}
+.header__left
+{
+    float: left;
+}
+.header__right
+{
+    float: right;
+}
+
 .full-screen
 {
-    height: 100%;
+    top: 50px;
+    bottom: 0;
     width:100%;
     position: absolute;
 }

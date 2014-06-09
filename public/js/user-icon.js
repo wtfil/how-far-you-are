@@ -9,10 +9,11 @@ module.exports =  React.createClass({
             color: this.props.color,
             'border-color': this.props.color
         };
-        var _this = this;
+        var _this = this,
+            userName = this.props.userName || '<username>';
 
         return <div className="user-icon" style={style}>
-            {this.props.address || 'wait...'}
+            {userName}: {this.props.address}
         </div>
     }
 });

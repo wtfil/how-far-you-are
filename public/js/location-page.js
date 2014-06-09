@@ -62,7 +62,6 @@ module.exports =  React.createClass({
             try {
                 data = JSON.parse(data);
             } catch(e){};
-            console.log(data);
 
             if (data.position) {
                 remote[data.socketId] = data.position;
@@ -99,11 +98,12 @@ module.exports =  React.createClass({
         return <div className="full-screen">
             <div className="full-screen__top">
                 {ids.map(function (id, index) {
-                    return <User color={colorOrder[index]} address={s.remote[id].address}/>
+                    var remote = s.remote[id];                              
+                    return <User color={colorOrder[index]} address={remote.address} userName={remote.userName}/>
                 })}
             </div>
             <div className="full-screen__bottom">
-                <User color="#3399FF" address={s.local.address}/>
+                <User color="#3399FF" address={s.local.address} userName={s.local.userName}/>
             </div>
             <div className="position">
                 <div>

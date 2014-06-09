@@ -4,7 +4,7 @@ var React = require('react'),
 
 module.exports =  React.createClass({
     render: function () {
-        return <div className="full-screen .share">
+        return <div className="full-screen share">
             <button onClick={this._onClick} className="btn btn-primary">Share your location</button>
         </div>
     },
