@@ -88,7 +88,7 @@ module.exports =  React.createClass({
 
         //TODO make better
         if (!s.local || !remote) {
-            return <div></div>
+            return <div className="message">Waiting for connections...</div>
         }
 
         var distance = geo.toMetrs(s.local, remote),

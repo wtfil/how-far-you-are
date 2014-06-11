@@ -9,6 +9,10 @@ body, html, .app
 
 .header
 {
+    background: #00ad48;
+    overflow: hidden;
+    padding: 3px 3px 4px;
+    /*border-bottom: 2px solid #222;*/
 }
 .header__left
 {
@@ -18,10 +22,37 @@ body, html, .app
 {
     float: right;
 }
+.user-name
+{
+    border: none;
+    border-radius: 3px;
+    color: #aaa;
+    padding: 2px 7px;
+}
+
+.message
+{
+    /*position: fixed;*/
+    width: 200px;
+    padding: 20px;
+    color: white;
+    margin: auto;
+    margin-top: 45%;
+    background: #FF6666;
+    border-radius: 3px;
+}
+
+.content
+{
+    position: absolute;
+    top: 0px;
+    bottom: 0;
+    width: 100%;
+}
 
 .full-screen
 {
-    top: 50px;
+    top: 35px;
     bottom: 0;
     width:100%;
     position: absolute;
