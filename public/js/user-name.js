@@ -6,7 +6,8 @@ module.exports = React.createClass({
 
     getInitialState: function () {
         return {
-            userName: profile.userName
+            /*userName: profile.userName*/
+            userName: 'fil'
         };
     },
 

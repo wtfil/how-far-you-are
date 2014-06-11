@@ -12,8 +12,13 @@ body, html, .app
     background: #00ad48;
     overflow: hidden;
     padding: 3px 3px 4px;
-    /*border-bottom: 2px solid #222;*/
 }
+
+.header a
+{
+    color: #ddd;
+}
+
 .header__left
 {
     float: left;
@@ -26,13 +31,20 @@ body, html, .app
 {
     border: none;
     border-radius: 3px;
-    color: #aaa;
+    color: #333;
     padding: 2px 7px;
+}
+.share-url
+{
+    width: 100%;
+    padding: 7px;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .message
 {
-    /*position: fixed;*/
     width: 200px;
     padding: 20px;
     color: white;
@@ -45,14 +57,14 @@ body, html, .app
 .content
 {
     position: absolute;
-    top: 0px;
+    top: 35px;
     bottom: 0;
     width: 100%;
 }
 
 .full-screen
 {
-    top: 35px;
+    top: 0px;
     bottom: 0;
     width:100%;
     position: absolute;

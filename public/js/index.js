@@ -11,6 +11,9 @@ var App = React.createClass({
     render: function () {
         return <div>
             <div className="header">
+                <div className="header__left">
+                    <a href="/">Home</a>
+                </div>
                 <div className="header__right">
                     <UserName/>
                 </div>
