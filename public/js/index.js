@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var React = require('react'),
     router = require('react-router-component'),
+    CaptureClicks = require('react-router-component/lib/CaptureClicks'),
     Locations = router.Locations,
     Location = router.Location,
     UserName = require('./user-name'),
@@ -9,7 +10,7 @@ var React = require('react'),
 
 var App = React.createClass({
     render: function () {
-        return <div>
+        return <CaptureClicks>
             <div className="header">
                 <div className="header__left">
                     <a href="/">Home</a>
@@ -24,7 +25,7 @@ var App = React.createClass({
                     <Location path="/:id" handler={LocationPage} />
                 </Locations>
             </div>
-        </div>
+        </CaptureClicks>
     }
 });
 

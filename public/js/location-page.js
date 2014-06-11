@@ -31,6 +31,29 @@ var colorOrder = [
     '#996600'
 ];
 
+var Message = React.createClass({
+    render: function () {
+        return React.DOM.div({
+            className: 'message'
+        }, 
+            'Waiting for connections...',
+            React.DOM.br(),
+            'Share this url with your friends',
+            React.DOM.input({
+                type: 'text',
+                ref: 'input',
+                value: window.location.href,
+                className: 'message__url',
+                onClick: this._onSelectUrl,
+            })
+        )
+    },
+
+    _onSelectUrl: function () {
+        this.refs.input.getDOMNode().select();
+    }
+});
+
 module.exports =  React.createClass({
 
     getInitialState: function () {
@@ -88,12 +111,7 @@ module.exports =  React.createClass({
 
         //TODO make better
         if (!s.local || !remote) {
-            return <div className="message">
-                Waiting for connections...
-                <div className="share-url" onClick={this._onSelectUrl}>
-                    {window.location.href}
-                </div>
-            </div>
+            return <Message/>
         }
 
         var distance = geo.toMetrs(s.local, remote),

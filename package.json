@@ -1,5 +1,5 @@
 {
-    "name": "letsdoit",
+    "name": "how-far-you-are",
     "version": "0.0.1",
     "dependencies": {
         "koa": "*",
