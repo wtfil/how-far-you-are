@@ -4,9 +4,9 @@ var React = require('react'),
 
 module.exports =  React.createClass({
     render: function () {
-        return <div className="full-screen share">
-            <button onClick={this._onClick} className="btn btn-primary">Share your location</button>
-        </div>
+        return <div className="full-screen">
+            <button onClick={this._onClick} className="btn btn-primary share in-center">Share your location</button>
+        </div>;
     },
     _onClick: function () {
         var id = Date.now() + Math.random();

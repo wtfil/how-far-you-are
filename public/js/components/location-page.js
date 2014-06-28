@@ -34,7 +34,7 @@ var colorOrder = [
 var Message = React.createClass({
     render: function () {
         return React.DOM.div({
-            className: 'message'
+            className: 'message in-center'
         }, 
             'Waiting for connections...',
             React.DOM.br(),
@@ -128,7 +128,7 @@ module.exports =  React.createClass({
             <div className="full-screen__bottom">
                 <Address color="#3399FF" address={s.local.address} userName={s.local.userName}/>
             </div>
-            <div className="position">
+            <div className="position in-center">
                 <div>
                     {ids.map(function (id, index) {
                         return <Compas local={s.local} remote={s.remote[id]} color={colorOrder[index]} />;

@@ -39,14 +39,10 @@ body, html, .app
 .message
 {
     width: 250px;
+    height: 114px;
     padding: 20px;
     color: white;
-    margin: auto;
-    margin-top: 45%;
-    /*background: #FF6666;*/
-    /*background: #3276b1;*/
     background: #2aabd2;
-    /*border: 1px solid #285e8e;*/
     border: 1px solid #269abc;
     border-radius: 3px;
 }
@@ -96,23 +92,24 @@ body, html, .app
 }
 .share
 {
-    text-align: center;
-}
-.share button
-{
-    margin-top: 50%;
+    width: 150px;
+    height: 32px;
 }
 
-.position
+.in-center
 {
-    width: 200px;
-    height: 200px;
     margin: auto;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     position: absolute;
+}
+
+.position
+{
+    width: 200px;
+    height: 200px;
 }
 
 .distance
@@ -150,7 +147,7 @@ body, html, .app
     width: 0;
 }
 
-.user-icon
+.aadress
 {
     padding: 0 7px;
     border-style: solid;

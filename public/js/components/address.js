@@ -11,7 +11,7 @@ module.exports =  React.createClass({
         var _this = this,
             userName = this.props.userName || '<username>';
 
-        return <div className="user-icon" style={style}>
+        return <div className="address" style={style}>
             {userName}: {this.props.address}
         </div>;
     }
