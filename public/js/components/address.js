@@ -1,6 +1,5 @@
 /** @jsx React.DOM */
-var React = require('react'),
-    geo = require('./geo');
+var React = require('react');
 
 module.exports =  React.createClass({
 
@@ -14,6 +13,6 @@ module.exports =  React.createClass({
 
         return <div className="user-icon" style={style}>
             {userName}: {this.props.address}
-        </div>
+        </div>;
     }
 });

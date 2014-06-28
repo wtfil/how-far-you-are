@@ -4,9 +4,9 @@ var React = require('react'),
     CaptureClicks = require('react-router-component/lib/CaptureClicks'),
     Locations = router.Locations,
     Location = router.Location,
-    UserName = require('./user-name'),
-    MainPage = require('./main-page'),
-    LocationPage = require('./location-page');
+    UserName = require('./components/user-name'),
+    MainPage = require('./components/main-page'),
+    LocationPage = require('./components/location-page');
 
 var App = React.createClass({
     render: function () {

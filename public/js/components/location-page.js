@@ -1,9 +1,9 @@
 /** @jsx React.DOM */
 var React = require('react'),
-    User = require('./user-icon'),
+    Address = require('./address'),
+    Compas = require('./compas'),
     eio = require('engine.io-client'),
-    geo = require('./geo'),
-    Compas = require('./compas-component');
+    geo = require('../emitters/geo-location');
 
 var socket = eio.Socket('ws://' + location.host);
 
@@ -46,7 +46,7 @@ var Message = React.createClass({
                 className: 'message__url',
                 onClick: this._onSelectUrl,
             })
-        )
+        );
     },
 
     _onSelectUrl: function () {
@@ -76,7 +76,7 @@ module.exports =  React.createClass({
                 position: local
             }));
 
-        }
+        };
         geo.on('position', this._onGeo);
 
         socket.on('message', function (data) {
@@ -84,7 +84,7 @@ module.exports =  React.createClass({
 
             try {
                 data = JSON.parse(data);
-            } catch(e){};
+            } catch(e){}
 
             if (data.position) {
                 remote[data.socketId] = data.position;
@@ -111,7 +111,7 @@ module.exports =  React.createClass({
 
         //TODO make better
         if (!s.local || !remote) {
-            return <Message/>
+            return <Message/>;
         }
 
         var distance = geo.toMetrs(s.local, remote),
@@ -122,21 +122,21 @@ module.exports =  React.createClass({
             <div className="full-screen__top">
                 {ids.map(function (id, index) {
                     var remote = s.remote[id];                              
-                    return <User color={colorOrder[index]} address={remote.address} userName={remote.userName}/>
+                    return <Address color={colorOrder[index]} address={remote.address} userName={remote.userName}/>;
                 })}
             </div>
             <div className="full-screen__bottom">
-                <User color="#3399FF" address={s.local.address} userName={s.local.userName}/>
+                <Address color="#3399FF" address={s.local.address} userName={s.local.userName}/>
             </div>
             <div className="position">
                 <div>
                     {ids.map(function (id, index) {
-                        return <Compas local={s.local} remote={s.remote[id]} color={colorOrder[index]} />
+                        return <Compas local={s.local} remote={s.remote[id]} color={colorOrder[index]} />;
                     })}
                 </div>
                 <div className="distance">{distance}</div>
             </div>
-        </div>
+        </div>;
     }
 
 });

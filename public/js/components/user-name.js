@@ -1,5 +1,5 @@
 var React = require('react'),
-    profile = require('./profile'),
+    profile = require('../emitters/profile'),
     DEFAULT_USER_NAME = '<username>';
 
 module.exports = React.createClass({
