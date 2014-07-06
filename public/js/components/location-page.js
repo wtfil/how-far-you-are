@@ -70,7 +70,6 @@ module.exports =  React.createClass({
 
         this._onSocket = function (data) {
     		var remote = _this.state.remote;
-    		console.log(data);
 
     		try {
         		data = JSON.parse(data);

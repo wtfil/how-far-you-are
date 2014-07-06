@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 var React = require('react'),
-    compas = require('./compas');
+    compas = require('../emitters/compas');
 
 function formatAlpha(c1, c2, alpha) {
 
