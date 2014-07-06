@@ -1,6 +1,6 @@
-var EventEmiter = require('./event-emiter'),
+var EventEmitter = require('events').EventEmitter,
+    emitter = new EventEmitter(),
     profile = require('./profile'),
-    emiter = new EventEmiter(),
     R = 6378137,
     TO_RAD = Math.PI / 180;
 
@@ -41,8 +41,10 @@ function geocode(coords, done) {
 
         try {
             response = JSON.parse(response);
-        } catch(e) {} 
-        response = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+        	response = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+        } catch(e) {
+        	response = null;
+        } 
         done(response);
     };
 
@@ -55,23 +57,23 @@ function geocode(coords, done) {
 
 
 navigator.geolocation.watchPosition(function (p) {
-    emiter.emit('location', p.coords);
+
+    var coords = p.coords;
+    geocode(p.coords, function (address) {
+    	last = {
+        	latitude: coords.latitude,
+        	longitude: coords.longitude,
+        	address: address,
+        	// bad-bad
+        	userName: profile.userName
+    	};
+        emitter.emit('position', last);
+        emitter.emit('change');
+    });
 }, onError, options);
 
-emiter.on('location', function (p) {
-    geocode(p, function (address) {
-        last = {
-            latitude: p.latitude,
-            longitude: p.longitude,
-            address: address,
-            // bad-bad
-            userName: profile.userName
-        };
-        emiter.emit('position', last);
-    });
-});
 
-module.exports = emiter;
+module.exports = emitter;
 module.exports.toMetrs = toMetrs;
 module.exports.geocode = geocode;
 module.exports.get = function (done) {
