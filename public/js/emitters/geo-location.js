@@ -2,7 +2,8 @@ var EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter(),
     profile = require('./profile'),
     R = 6378137,
-    TO_RAD = Math.PI / 180;
+    TO_RAD = Math.PI / 180,
+    last = null;
 
 var options = {
     enableHighAccuracy: false,
@@ -71,6 +72,14 @@ navigator.geolocation.watchPosition(function (p) {
         emitter.emit('change');
     });
 }, onError, options);
+
+// watchPosition do not triggered more then once on desktop
+setInterval(function () {
+	if (last) {
+		emitter.emit('position', last);
+    	emitter.emit('change');
+	}
+}, 1000);
 
 
 module.exports = emitter;

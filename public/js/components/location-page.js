@@ -2,18 +2,8 @@
 var React = require('react'),
     Address = require('./address'),
     Compas = require('./compas'),
-    eio = require('engine.io-client'),
+    socket = require('../emitters/socket'),
     geo = require('../emitters/geo-location');
-
-var socket = eio.Socket('ws://' + location.host);
-
-var lastId;
-function joinRoom(id) {
-    if (id === lastId) {
-        return;
-    } 
-    socket.send(JSON.stringify({room: id}));
-}
 
 function formatDistance(d) {
     if (d < 1e3) {
@@ -66,42 +56,46 @@ module.exports =  React.createClass({
     componentWillMount: function () {
         var _this = this;
 
-        joinRoom(this.props.id);
+        socket.joinRoom(this.props.id);
         this._onGeo = function (local) {
             _this.setState({
                 local: local
             });
 
-            socket.send(JSON.stringify({
+            socket.send({
                 position: local
-            }));
-
-        };
-        geo.on('position', this._onGeo);
-
-        socket.on('message', function (data) {
-            var remote = _this.state.remote;
-
-            try {
-                data = JSON.parse(data);
-            } catch(e){}
-
-            if (data.position) {
-                remote[data.socketId] = data.position;
-            } else if (data.disconnected) {
-                delete remote[data.socketId];
-            }
-
-            _this.setState({
-                remote: remote
             });
 
+        };
 
-        });
+        this._onSocket = function (data) {
+    		var remote = _this.state.remote;
+    		console.log(data);
+
+    		try {
+        		data = JSON.parse(data);
+    		} catch(e){}
+
+    		if (data.position) {
+        		remote[data.socketId] = data.position;
+    		} else if (data.disconnected) {
+        		delete remote[data.socketId];
+    		}
+
+    		_this.setState({
+        		remote: remote
+    		});
+
+        };
+        socket.on('message', this._onSocket);
+        geo.on('position', this._onGeo);
+
 
     },
 
     componentWillUnmount: function () {
+    	socket.leftRoom(this.props.id);
+        socket.off('message', this._onSocket);
         geo.off('distance', this._onGeo);
     },
 

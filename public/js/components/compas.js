@@ -50,7 +50,7 @@ module.exports = React.createClass({
 
         this._onCompas = function (alpha) {
             _this.setState({alpha: alpha});
-        }
+        };
 
         compas.on('alpha', this._onCompas);
     },
@@ -66,6 +66,6 @@ module.exports = React.createClass({
 
         return <div className="compas" style={{'-webkit-transform': 'rotate(' + alpha + 'deg)'}}>
             <div className="compas__arrow" style={{'border-bottom-color': this.props.color}}></div>
-        </div>
+        </div>;
     }
-})
+});
