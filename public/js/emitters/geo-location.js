@@ -1,23 +1,23 @@
 var EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter(),
-    profile = require('./profile'),
+    ajax = require('../utils/ajax'),
     R = 6378137,
     TO_RAD = Math.PI / 180,
     last = null;
 
 var options = {
     enableHighAccuracy: false,
-    timeout: 5000,
-    maximumAge: 0
+    timeout: 2000,
+    maximumAge: 60
 };
-
-function onError(e) {
-    console.error(e);
-}
 
 function toMetrs(coordsA, coordsB) {
     var dlat = (coordsA.latitude - coordsB.latitude) * TO_RAD,
         dlng = (coordsA.longitude - coordsB.longitude) * TO_RAD;
+
+    if (dlat === 0 && dlng === 0) {
+    	return 0;
+    }
 
     return R * Math.sqrt(Math.pow(dlat, 2), Math.pow(dlng, 2));
 }
@@ -25,66 +25,59 @@ function toMetrs(coordsA, coordsB) {
 function geocode(coords, done) {
 
     if (!coords) {
-        return done('');
+        return done(null);
     }
 
     var url = 'http://geocode-maps.yandex.ru/1.x/?lang=ru&format=json',
-        ll = coords.longitude + ',' + coords.latitude,
-        xhr = new XMLHttpRequest();
+        ll = coords.longitude + ',' + coords.latitude;
+
     url += '&geocode=' + ll;
-
-    xhr.onload = function (r) {
-        if (xhr.readyState !== 4) {
-            return;
-        }
-
-        var response = xhr.responseText;
-
+    ajax(url, function (e, response) {
+    	var address;
+    	if (e) {
+    		return done(null);
+    	}
         try {
-            response = JSON.parse(response);
-        	response = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
-        } catch(e) {
-        	response = null;
-        } 
-        done(response);
-    };
+            address = JSON.parse(response);
+        	address = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+        } catch(err) {
+        	address = null;
+        }
+        done(address);
+    });
 
-    xhr.onerror = function (e) {
-        console.log(e);
-    };
-    xhr.open('get', url);
-    xhr.send();
+}
+
+function watch(handler) {
+	navigator.geolocation.watchPosition(function (p) {
+    	handler(p.coords);
+	}, function () {
+		// falback
+		var coords = {
+			latitude: 30 + Math.random(),
+			longitude: 50 + Math.random()
+		};
+		setInterval(handler.bind(null, coords), 1000);
+	}, options);
 }
 
 
-navigator.geolocation.watchPosition(function (p) {
-
-    var coords = p.coords;
-    geocode(p.coords, function (address) {
+watch(function (coords) {
+    geocode(coords, function (address) {
     	last = {
         	latitude: coords.latitude,
         	longitude: coords.longitude,
-        	address: address,
-        	// bad-bad
-        	userName: profile.userName
+        	address: address
     	};
         emitter.emit('position', last);
         emitter.emit('change');
     });
-}, onError, options);
+});
 
-// watchPosition do not triggered more then once on desktop
-setInterval(function () {
-	if (last) {
-		emitter.emit('position', last);
-    	emitter.emit('change');
-	}
-}, 1000);
 
+emitter.toMetrs = toMetrs;
+emitter.getPosition = function () {
+	return last;
+};
 
 module.exports = emitter;
-module.exports.toMetrs = toMetrs;
-module.exports.geocode = geocode;
-module.exports.get = function (done) {
-    done(last);
-};

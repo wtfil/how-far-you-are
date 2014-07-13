@@ -4,6 +4,11 @@ var React = require('react');
 module.exports =  React.createClass({
 
     render: function () {
+
+    	if (!this.props.address) {
+    		return <div></div>;
+    	}
+
         var style = {
             color: this.props.color,
             'border-color': this.props.color

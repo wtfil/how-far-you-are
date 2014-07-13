@@ -1,20 +1,17 @@
 var EventEmitter = require('events').EventEmitter;
     emitter = new EventEmitter();
 
-/**
- * Current user name
- */ 
-emitter.userName = localStorage.getItem('userName') || '';
+var userName = localStorage.getItem('userName') || '';
 
-/**
- * Update user name
- * @param {String} name
- */
-emitter.changeName = function (name) {
-    this.userName = name;
+emitter.setName = function (name) {
+    userName = name;
     localStorage.setItem('userName', name);
     this.emit('name', name);
     this.emit('change');
+};
+
+emitter.getName = function () {
+	return userName;
 };
 
 module.exports = emitter;

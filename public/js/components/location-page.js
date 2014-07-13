@@ -1,9 +1,10 @@
 /** @jsx React.DOM */
 var React = require('react'),
+	ReactEmitterMixin = require('../utils/react-emitter-mixin'),
     Address = require('./address'),
     Compas = require('./compas'),
-    socket = require('../emitters/socket'),
-    geo = require('../emitters/geo-location');
+    geo = require('../emitters/geo-location'),
+    room = require('../emitters/room');
 
 function formatDistance(d) {
     if (d < 1e3) {
@@ -46,61 +47,27 @@ var Message = React.createClass({
 
 module.exports =  React.createClass({
 
+	mixins: [ReactEmitterMixin],
+	emitters: [room],
+
     getInitialState: function () {
         return {
             local: null,
             remote: {}
         };
     },
-
-    componentWillMount: function () {
-        var _this = this;
-
-        socket.joinRoom(this.props.id);
-        this._onGeo = function (local) {
-            _this.setState({
-                local: local
-            });
-
-            socket.send({
-                position: local
-            });
-
-        };
-
-        this._onSocket = function (data) {
-    		var remote = _this.state.remote;
-
-    		try {
-        		data = JSON.parse(data);
-    		} catch(e){}
-
-    		if (data.position) {
-        		remote[data.socketId] = data.position;
-    		} else if (data.disconnected) {
-        		delete remote[data.socketId];
-    		}
-
-    		_this.setState({
-        		remote: remote
-    		});
-
-        };
-        socket.on('message', this._onSocket);
-        geo.on('position', this._onGeo);
-
-
+	
+    componentDidMount: function () {
+        room.join(this.props.id);
     },
 
-    componentWillUnmount: function () {
-    	socket.leftRoom(this.props.id);
-        socket.off('message', this._onSocket);
-        geo.off('distance', this._onGeo);
+    componentDidUnmount: function () {
+    	room.left(this.props.id);
     },
 
     render: function () {
-        var s = this.state,
-            remote = s.remote[Object.keys(s.remote)[0]];
+    	var s = room.getMembers(),
+        	remote = s.remote[Object.keys(s.remote)[0]];
 
         //TODO make better
         if (!s.local || !remote) {
