@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 var React = require('react'),
-	ReactEmitterMixin = require('../utils/react-emitter-mixin'),
+    ReactEmitterMixin = require('../utils/react-emitter-mixin'),
     Address = require('./address'),
     Compas = require('./compas'),
     geo = require('../emitters/geo-location'),
@@ -24,9 +24,11 @@ var colorOrder = [
 
 var Message = React.createClass({
     render: function () {
-        return React.DOM.div({
-            className: 'message in-center'
-        }, 
+        return React.DOM.div(
+            {
+                className: 'message in-center'
+            }, 
+
             'Waiting for connections...',
             React.DOM.br(),
             'Share this url with your friends',
@@ -47,8 +49,8 @@ var Message = React.createClass({
 
 module.exports =  React.createClass({
 
-	mixins: [ReactEmitterMixin],
-	emitters: [room],
+    mixins: [ReactEmitterMixin],
+    emitters: [room],
 
     getInitialState: function () {
         return {
@@ -56,18 +58,18 @@ module.exports =  React.createClass({
             remote: {}
         };
     },
-	
+
     componentDidMount: function () {
         room.join(this.props.id);
     },
 
     componentDidUnmount: function () {
-    	room.left(this.props.id);
+        room.left(this.props.id);
     },
 
     render: function () {
-    	var s = room.getMembers(),
-        	remote = s.remote[Object.keys(s.remote)[0]];
+        var s = room.getMembers(),
+            remote = s.remote[Object.keys(s.remote)[0]];
 
         //TODO make better
         if (!s.local || !remote) {
@@ -76,14 +78,14 @@ module.exports =  React.createClass({
 
         var distance = geo.toMetrs(s.local, remote),
             ids = Object.keys(s.remote);
-        distance = formatDistance(distance);
+            distance = formatDistance(distance);
 
         return <div className="full-screen">
             <div className="full-screen__top">
-                {ids.map(function (id, index) {
-                    var remote = s.remote[id];                              
-                    return <Address color={colorOrder[index]} address={remote.address} userName={remote.userName}/>;
-                })}
+            {ids.map(function (id, index) {
+                var remote = s.remote[id];                              
+                return <Address color={colorOrder[index]} address={remote.address} userName={remote.userName}/>;
+            })}
             </div>
             <div className="full-screen__bottom">
                 <Address color="#3399FF" address={s.local.address} userName={s.local.userName}/>

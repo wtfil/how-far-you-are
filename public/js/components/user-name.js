@@ -1,12 +1,13 @@
 var React = require('react'),
-	ReactEmitterMixin = require('../utils/react-emitter-mixin'),
+    ReactEmitterMixin = require('../utils/react-emitter-mixin'),
     profile = require('../emitters/profile'),
+
     DEFAULT_USER_NAME = '<username>';
 
 module.exports = React.createClass({
 
-	mixins: [ReactEmitterMixin],
-	emitters: [profile],
+    mixins: [ReactEmitterMixin],
+    emitters: [profile],
 
     getInitialState: function () {
         return {
@@ -30,4 +31,3 @@ module.exports = React.createClass({
     }
 
 });
-

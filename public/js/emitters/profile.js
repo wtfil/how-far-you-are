@@ -1,4 +1,4 @@
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter();
 
 var userName = localStorage.getItem('userName') || '';
@@ -11,7 +11,7 @@ emitter.setName = function (name) {
 };
 
 emitter.getName = function () {
-	return userName;
+    return userName;
 };
 
 module.exports = emitter;

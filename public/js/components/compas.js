@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 var React = require('react'),
-	ReactEmitterMixin = require('../utils/react-emitter-mixin'),
+    ReactEmitterMixin = require('../utils/react-emitter-mixin'),
     compas = require('../emitters/compas');
 
 
@@ -47,8 +47,8 @@ module.exports = React.createClass({
         return {alpha: 0};
     },
 
-	mixins: [ReactEmitterMixin],
-	emitters: [compas],
+    mixins: [ReactEmitterMixin],
+    emitters: [compas],
 
     componentWillMount: function () {
         var _this = this;
@@ -66,6 +66,7 @@ module.exports = React.createClass({
 
     render: function () {
         var alpha = formatAlpha(this.props.local, this.props.remote, this.state.alpha);
+
         alpha = addAlphaOffset(alpha, this._lastAlpha);
         this._lastAlpha = alpha;
 

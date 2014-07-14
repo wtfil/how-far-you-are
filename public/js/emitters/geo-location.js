@@ -16,7 +16,7 @@ function toMetrs(coordsA, coordsB) {
         dlng = (coordsA.longitude - coordsB.longitude) * TO_RAD;
 
     if (dlat === 0 && dlng === 0) {
-    	return 0;
+        return 0;
     }
 
     return R * Math.sqrt(Math.pow(dlat, 2), Math.pow(dlng, 2));
@@ -33,15 +33,15 @@ function geocode(coords, done) {
 
     url += '&geocode=' + ll;
     ajax(url, function (e, response) {
-    	var address;
-    	if (e) {
-    		return done(null);
-    	}
+        var address;
+        if (e) {
+            return done(null);
+        }
         try {
             address = JSON.parse(response);
-        	address = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+            address = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
         } catch(err) {
-        	address = null;
+            address = null;
         }
         done(address);
     });
@@ -49,26 +49,26 @@ function geocode(coords, done) {
 }
 
 function watch(handler) {
-	navigator.geolocation.watchPosition(function (p) {
-    	handler(p.coords);
-	}, function () {
-		// falback
-		var coords = {
-			latitude: 30 + Math.random(),
-			longitude: 50 + Math.random()
-		};
-		setInterval(handler.bind(null, coords), 1000);
-	}, options);
+    navigator.geolocation.watchPosition(function (p) {
+        handler(p.coords);
+    }, function () {
+        // falback
+        var coords = {
+            latitude: 30 + Math.random(),
+            longitude: 50 + Math.random()
+        };
+        setInterval(handler.bind(null, coords), 1000);
+    }, options);
 }
 
 
 watch(function (coords) {
     geocode(coords, function (address) {
-    	last = {
-        	latitude: coords.latitude,
-        	longitude: coords.longitude,
-        	address: address
-    	};
+        last = {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            address: address
+        };
         emitter.emit('position', last);
         emitter.emit('change');
     });
@@ -77,7 +77,7 @@ watch(function (coords) {
 
 emitter.toMetrs = toMetrs;
 emitter.getPosition = function () {
-	return last;
+    return last;
 };
 
 module.exports = emitter;
