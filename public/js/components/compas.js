@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 var React = require('react'),
-    compas = require('./compas');
+	ReactEmitterMixin = require('../utils/react-emitter-mixin'),
+    compas = require('../emitters/compas');
+
 
 function formatAlpha(c1, c2, alpha) {
 
@@ -45,12 +47,15 @@ module.exports = React.createClass({
         return {alpha: 0};
     },
 
+	mixins: [ReactEmitterMixin],
+	emitters: [compas],
+
     componentWillMount: function () {
         var _this = this;
 
         this._onCompas = function (alpha) {
             _this.setState({alpha: alpha});
-        }
+        };
 
         compas.on('alpha', this._onCompas);
     },
@@ -66,6 +71,6 @@ module.exports = React.createClass({
 
         return <div className="compas" style={{'-webkit-transform': 'rotate(' + alpha + 'deg)'}}>
             <div className="compas__arrow" style={{'border-bottom-color': this.props.color}}></div>
-        </div>
+        </div>;
     }
-})
+});

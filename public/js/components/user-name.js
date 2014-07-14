@@ -1,8 +1,12 @@
 var React = require('react'),
+	ReactEmitterMixin = require('../utils/react-emitter-mixin'),
     profile = require('../emitters/profile'),
     DEFAULT_USER_NAME = '<username>';
 
 module.exports = React.createClass({
+
+	mixins: [ReactEmitterMixin],
+	emitters: [profile],
 
     getInitialState: function () {
         return {
@@ -10,24 +14,11 @@ module.exports = React.createClass({
         };
     },
 
-    componentWillMount: function () {
-
-        this._onChangeName = function (userName) {
-            this.setState({userName: userName});
-        }.bind(this);
-
-        profile.on('name', this._onChangeName);
-    },
-
-    componentWillUnmount: function () {
-        profile.off('name', this._onChangeName);
-    },
-
     render: function () {
         return React.DOM.input({
             type: 'text',
             className: 'user-name',
-            value: this.state.userName,
+            value: profile.getName(),
             placeholder: DEFAULT_USER_NAME,
             onChange: this._onChange
         });
@@ -35,7 +26,8 @@ module.exports = React.createClass({
 
     _onChange: function (e) {
         var name = e.target.value;
-        profile.changeName(name);
+        profile.setName(name);
     }
+
 });
 

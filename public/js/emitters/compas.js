@@ -1,8 +1,12 @@
-var EventEmiter = require('./event-emiter'),
-    emiter = new EventEmiter();
+var EventEmitter = require('events').EventEmitter,
+    emiter = new EventEmitter();
+
+emitter.alpha = 0;
 
 window.addEventListener('deviceorientation', function (e) {
-    emiter.emit('alpha', e.alpha);
+	emitter.alpha = e.alpha;
+    emitter.emit('alpha', e.alpha);
+	emitter.emit('change');
 });
 
-module.exports = emiter;
+module.exports = emitter;

@@ -7,9 +7,12 @@
         "koa-static": "*",
         "reactify": "*",
         "engine.io": "*",
+        "socket.io": "*",
+        "extend": "1.3.0",
 
         "react": "*",
         "engine.io-client": "*",
+		"socket.io-client": "*",
         "react-router-component": "*"
     },
     "scripts": {

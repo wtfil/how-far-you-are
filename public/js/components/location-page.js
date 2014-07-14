@@ -1,19 +1,10 @@
 /** @jsx React.DOM */
 var React = require('react'),
+	ReactEmitterMixin = require('../utils/react-emitter-mixin'),
     Address = require('./address'),
     Compas = require('./compas'),
-    eio = require('engine.io-client'),
-    geo = require('../emitters/geo-location');
-
-var socket = eio.Socket('ws://' + location.host);
-
-var lastId;
-function joinRoom(id) {
-    if (id === lastId) {
-        return;
-    } 
-    socket.send(JSON.stringify({room: id}));
-}
+    geo = require('../emitters/geo-location'),
+    room = require('../emitters/room');
 
 function formatDistance(d) {
     if (d < 1e3) {
@@ -34,7 +25,7 @@ var colorOrder = [
 var Message = React.createClass({
     render: function () {
         return React.DOM.div({
-            className: 'message'
+            className: 'message in-center'
         }, 
             'Waiting for connections...',
             React.DOM.br(),
@@ -56,58 +47,27 @@ var Message = React.createClass({
 
 module.exports =  React.createClass({
 
+	mixins: [ReactEmitterMixin],
+	emitters: [room],
+
     getInitialState: function () {
         return {
             local: null,
             remote: {}
         };
     },
-
-    componentWillMount: function () {
-        var _this = this;
-
-        joinRoom(this.props.id);
-        this._onGeo = function (local) {
-            _this.setState({
-                local: local
-            });
-
-            socket.send(JSON.stringify({
-                position: local
-            }));
-
-        };
-        geo.on('position', this._onGeo);
-
-        socket.on('message', function (data) {
-            var remote = _this.state.remote;
-
-            try {
-                data = JSON.parse(data);
-            } catch(e){}
-
-            if (data.position) {
-                remote[data.socketId] = data.position;
-            } else if (data.disconnected) {
-                delete remote[data.socketId];
-            }
-
-            _this.setState({
-                remote: remote
-            });
-
-
-        });
-
+	
+    componentDidMount: function () {
+        room.join(this.props.id);
     },
 
-    componentWillUnmount: function () {
-        geo.off('distance', this._onGeo);
+    componentDidUnmount: function () {
+    	room.left(this.props.id);
     },
 
     render: function () {
-        var s = this.state,
-            remote = s.remote[Object.keys(s.remote)[0]];
+    	var s = room.getMembers(),
+        	remote = s.remote[Object.keys(s.remote)[0]];
 
         //TODO make better
         if (!s.local || !remote) {
@@ -128,7 +88,7 @@ module.exports =  React.createClass({
             <div className="full-screen__bottom">
                 <Address color="#3399FF" address={s.local.address} userName={s.local.userName}/>
             </div>
-            <div className="position">
+            <div className="position in-center">
                 <div>
                     {ids.map(function (id, index) {
                         return <Compas local={s.local} remote={s.remote[id]} color={colorOrder[index]} />;
