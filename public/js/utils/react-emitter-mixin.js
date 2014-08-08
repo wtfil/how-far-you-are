@@ -10,8 +10,8 @@ module.exports = {
 
     componentWillUnmount: function () {
         [].concat(this.emitters).forEach(function (emitter) {
-            emitter.off('change', this._update);
-            emitter.off('error', this._error);
+            emitter.removeListener('change', this._update);
+            emitter.removeListener('error', this._error);
         }, this);
     },
 
