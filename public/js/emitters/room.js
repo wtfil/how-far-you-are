@@ -4,6 +4,7 @@ var EventEmitter = require('events').EventEmitter,
     geo = require('./geo-location'),
     profile = require('./profile'),
     socket = require('./socket'),
+    debug = require('../utils/debug'),
     remote = {},
     local;
 
@@ -15,13 +16,13 @@ function updateLocal() {
 
 function updateRemote(data) {
     if (data.newMember) {
-        console.log(1);
+    	debug('new member');
         remote[data.newMember] = {};
     } else if (data.position) {
-        console.log(2);
+    	debug('new position');
         remote[data.socketId] = data.position;
     } else if (data.disconnected) {
-        console.log(3);
+    	debug('disconnected');
         delete remote[data.socketId];
     }
     emitter.emit('change');
@@ -45,6 +46,7 @@ function getMembers() {
 geo.on('change', updateLocal);
 profile.on('change', updateLocal);
 socket.on('message', updateRemote);
+geo.on('error', emitter.emit.bind(emitter, 'error'));
 
 emitter.join = join;
 emitter.left = left;

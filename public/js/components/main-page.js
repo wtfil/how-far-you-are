@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var React = require('react'),
-    Enviroment = require('react-router-component').environment.pathnameEnvironment;
+    Enviroment = require('react-router-component').environment.pathnameEnvironment,
+    ajax = require('../utils/ajax');
 
 module.exports =  React.createClass({
     render: function () {
@@ -9,7 +10,8 @@ module.exports =  React.createClass({
         </div>;
     },
     _onClick: function () {
-        var id = Date.now() + Math.random();
-        Enviroment.setPath('/' + id, {});
+    	ajax('/rooms', function (e, response) {
+        	Enviroment.setPath('/' + response.id, {});
+    	});
     }
 });

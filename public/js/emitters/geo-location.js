@@ -38,7 +38,6 @@ function geocode(coords, done) {
             return done(null);
         }
         try {
-            address = JSON.parse(response);
             address = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
         } catch(err) {
             address = null;
@@ -51,13 +50,8 @@ function geocode(coords, done) {
 function watch(handler) {
     navigator.geolocation.watchPosition(function (p) {
         handler(p.coords);
-    }, function () {
-        // falback
-        var coords = {
-            latitude: 30 + Math.random(),
-            longitude: 50 + Math.random()
-        };
-        setInterval(handler.bind(null, coords), 1000);
+    }, function (e) {
+        emitter.emit('error', new Error('Seems that geolocation does not work'));
     }, options);
 }
 

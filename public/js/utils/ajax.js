@@ -8,7 +8,7 @@ function ajax (url, done) {
             timerDone = true;
             xhr.abort();
             done(new Error('Timeout'));
-        });
+        }, TIMEOUT);
 
     xhr.onload = function (r) {
         if (timerDone || xhr.readyState !== 4) {
@@ -16,7 +16,11 @@ function ajax (url, done) {
         }
 
         clearTimeout(timer);
-        done(null, xhr.responseText);
+        try {
+        	done(null, JSON.parse(xhr.responseText));
+        } catch(err) {
+            done(err);
+        }
     };
 
     xhr.onerror = done;

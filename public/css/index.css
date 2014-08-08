@@ -45,6 +45,13 @@ body, html, .app
     background: #2aabd2;
     border: 1px solid #269abc;
     border-radius: 3px;
+    text-align: center;
+}
+.message.error {
+	background-color: #f76d6d;
+	border-color: #f95555;
+	font-size: 18px;
+	line-height: 2;
 }
 .message__url
 {

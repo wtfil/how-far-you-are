@@ -24,11 +24,7 @@ var colorOrder = [
 
 var Message = React.createClass({
     render: function () {
-        return React.DOM.div(
-            {
-                className: 'message in-center'
-            }, 
-
+    	var content = this.props.text || [
             'Waiting for connections...',
             React.DOM.br(),
             'Share this url with your friends',
@@ -39,7 +35,15 @@ var Message = React.createClass({
                 className: 'message__url',
                 onClick: this._onSelectUrl,
             })
-        );
+    	];
+
+    	var className = 'message in-center';
+
+    	if (this.props.error) {
+    		className += ' error';
+    	}
+
+        return React.DOM.div({className: className}, content);
     },
 
     _onSelectUrl: function () {
@@ -71,6 +75,9 @@ module.exports =  React.createClass({
         var s = room.getMembers(),
             remote = s.remote[Object.keys(s.remote)[0]];
 
+        if (this.errors) {
+        	return <Message error text={this.errors[0].message} />;
+        }
         //TODO make better
         if (!s.local || !remote) {
             return <Message/>;
