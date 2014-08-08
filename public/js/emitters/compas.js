@@ -1,5 +1,5 @@
 var EventEmitter = require('events').EventEmitter,
-    emiter = new EventEmitter();
+    emitter = new EventEmitter();
 
 emitter.alpha = 0;
 
