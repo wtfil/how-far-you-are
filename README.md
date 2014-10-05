@@ -14,3 +14,9 @@ You should have node@0.11.x
 ## Run
 
     npm start
+    
+## Demo
+
+    http://letstrack.me/
+
+(NOTE: do not blame me for long responce time for first time. I am just to lazy to precomile client-side scripts for prodction mode)
