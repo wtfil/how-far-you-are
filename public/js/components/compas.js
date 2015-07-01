@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react'),
     ReactEmitterMixin = require('../utils/react-emitter-mixin'),
     compas = require('../emitters/compas');

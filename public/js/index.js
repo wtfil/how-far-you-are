@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react'),
     router = require('react-router-component'),
     CaptureClicks = require('react-router-component/lib/CaptureClicks'),
@@ -25,7 +24,7 @@ var App = React.createClass({
                     <Location path="/:id" handler={LocationPage} />
                 </Locations>
             </div>
-        </CaptureClicks>
+        </CaptureClicks>;
     }
 });
 

@@ -11,7 +11,6 @@
     "koa-static": "*",
     "react": "*",
     "react-router-component": "*",
-    "reactify": "*",
     "socket.io": "*",
     "socket.io-client": "*"
   },
@@ -20,5 +19,14 @@
   },
   "engines": {
     "node": ">= 0.11.0"
+  },
+  "devDependencies": {
+    "gnode": "^0.1.1",
+    "gulp-nodemon": "^2.0.3",
+    "babelify": "^6.1.2",
+    "browserify": "^10.2.4",
+    "gulp": "^3.9.0",
+    "gulp-util": "^3.0.6",
+    "watchify": "^3.2.3"
   }
 }

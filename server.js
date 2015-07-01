@@ -1,6 +1,4 @@
 var app = require('koa')(),
-    reactify = require('reactify'),
-    browserify = require('koa-browserify'),
 	router = require('koa-router'),
     stat = require('koa-static'),
     rooms = require('./lib/rooms'),
@@ -10,12 +8,6 @@ var app = require('koa')(),
     server;
 
 app.use(router(app));
-app.use(browserify({
-    root: './public',
-    debug: true,
-    transform: reactify
-}));
-
 app.use(stat('./public'));
 app.get('/rooms', rooms);
 

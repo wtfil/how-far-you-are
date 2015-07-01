@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react'),
     Enviroment = require('react-router-component').environment.pathnameEnvironment,
     ajax = require('../utils/ajax');
