@@ -1,6 +1,5 @@
 var EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter(),
-    ajax = require('../utils/ajax'),
     R = 6378137,
     TO_RAD = Math.PI / 180,
     last = null;
@@ -28,22 +27,22 @@ function geocode(coords, done) {
         return done(null);
     }
 
-    var url = 'http://geocode-maps.yandex.ru/1.x/?lang=ru&format=json',
+    var url = 'https://geocode-maps.yandex.ru/1.x/?lang=ru&format=json',
         ll = coords.longitude + ',' + coords.latitude;
 
     url += '&geocode=' + ll;
-    ajax(url, function (e, response) {
-        var address;
-        if (e) {
-            return done(null);
-        }
-        try {
-            address = response.response.GeoObjectCollection.featureMember[0].GeoObject.name;
-        } catch(err) {
-            address = null;
-        }
-        done(address);
-    });
+    fetch(url)
+		.then(res => res.json())
+		.then(data => {
+			var address;
+			try {
+				address = data.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+			} catch(err) {
+				address = null;
+			}
+			done(address);
+		})
+		.catch(() => done());
 
 }
 

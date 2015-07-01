@@ -1,15 +1,16 @@
-var React = require('react');
-var ajax = require('../utils/ajax');
+import React from 'react'
+import {Navigation} from 'react-router';
 
 module.exports =  React.createClass({
+    mixins: [Navigation],
     render: function () {
         return <div className="full-screen">
-            <button onClick={this._onClick} className="btn btn-primary share in-center">Share your location</button>
+            <button onClick={this.onClick} className="btn btn-primary share in-center">Share your location</button>
         </div>;
     },
-    _onClick: function () {
-    	ajax('/rooms', function (e, response) {
-        	Enviroment.setPath('/' + response.id, {});
-    	});
+    onClick: function () {
+        fetch('/rooms')
+        .then(res => res.json())
+        .then(data => this.transitionTo('/' + data.id));
     }
 });
