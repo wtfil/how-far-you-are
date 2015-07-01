@@ -9,8 +9,8 @@
     "koa-browserify": "*",
     "koa-router": "^3.2.3",
     "koa-static": "*",
-    "react": "*",
-    "react-router-component": "*",
+    "react": "^0.13.3",
+    "react-router": "^1.0.0-beta3",
     "socket.io": "*",
     "socket.io-client": "*"
   },
@@ -18,7 +18,7 @@
     "start": "node --harmony server.js"
   },
   "engines": {
-    "node": ">= 0.11.0"
+    "node": "0.12.5"
   },
   "devDependencies": {
     "gnode": "^0.1.1",

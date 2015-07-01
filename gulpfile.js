@@ -48,7 +48,8 @@ gulp.task('js-watch', function () {
 
 gulp.task('server', function () {
 	nodemon({
-		script: './server.es5.js',
+		script: './server.js',
+		exec: 'node --harmony',
 		ext: 'js',
 		watch: ['server.js', 'lib']
 	});

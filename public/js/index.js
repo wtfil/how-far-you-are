@@ -1,15 +1,13 @@
-var React = require('react'),
-    router = require('react-router-component'),
-    CaptureClicks = require('react-router-component/lib/CaptureClicks'),
-    Locations = router.Locations,
-    Location = router.Location,
-    UserName = require('./components/user-name'),
-    MainPage = require('./components/main-page'),
-    LocationPage = require('./components/location-page');
+import React from 'react'
+import { Router, Route, Link } from 'react-router';
+import { history } from 'react-router/lib/BrowserHistory';
+import UserName from './components/user-name';
+import MainPage from './components/main-page';
+import LocationPage from './components/location-page';
 
 var App = React.createClass({
-    render: function () {
-        return <CaptureClicks>
+    render() {
+        return <div>
             <div className="header">
                 <div className="header__left">
                     <a href="/">Home</a>
@@ -19,15 +17,19 @@ var App = React.createClass({
                 </div>
             </div>
             <div className="content">
-                <Locations>
-                    <Location path="/" handler={MainPage} />
-                    <Location path="/:id" handler={LocationPage} />
-                </Locations>
+            	{this.props.children}
             </div>
-        </CaptureClicks>;
+        </div>;
     }
 });
 
-window.addEventListener('load', function () {
-    React.renderComponent(App(), document.querySelector('.app'));
+window.addEventListener('DOMContentLoaded', function () {
+	React.render((
+		<Router history={history}>
+			<Route path="" component={App}>
+				<Route path="/:id" component={LocationPage} />
+				<Route path="/" component={MainPage}/>
+			</Route>
+		</Router>
+	), document.body);
 });

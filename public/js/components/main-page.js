@@ -1,6 +1,5 @@
-var React = require('react'),
-    Enviroment = require('react-router-component').environment.pathnameEnvironment,
-    ajax = require('../utils/ajax');
+var React = require('react');
+var ajax = require('../utils/ajax');
 
 module.exports =  React.createClass({
     render: function () {
