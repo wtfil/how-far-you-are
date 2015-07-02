@@ -1,7 +1,7 @@
 var app = require('koa')();
 var router = require('koa-router');
 var stat = require('koa-static');
-var rooms = require('./lib/rooms');
+var rooms = require('./middlewares/rooms');
 var io = require('socket.io');
 var http = require('http');
 var fs = require('fs');
@@ -22,7 +22,7 @@ io = io(server);
 io.on('connection', function (socket) {
 	socket.on('join', function (data) {
 		socket.join(data.id);
-		socket.user = {name: '<username>'};
+		set(socket, {name: '<username>'});
 		sync(socket, true);
 	});
 	socket.on('leave', function (data) {
@@ -30,11 +30,11 @@ io.on('connection', function (socket) {
 		sync(socket);
 	});
 	socket.on('username', function (name) {
-		socket.user.name = name
+		set(socket, {name: name});
 		sync(socket);
 	});
 	socket.on('position', function (position) {
-		socket.user.position = position
+		set(socket, {position: position});
 		sync(socket);
 	});
 	socket.on('sync', function (data) {
@@ -42,6 +42,15 @@ io.on('connection', function (socket) {
 	});
 });
 
+function set(socket, params) {
+	if (!socket.user) {
+		socket.user = {};
+	}
+	var key;
+	for (key in params) {
+		socket.user[key] = params[key];
+	}
+}
 function sync(socket, isLoopback) {
 	var rooms = socket.adapter.rooms;
 	var roomId = Object.keys(rooms).reduce(function (a, b) {

@@ -7,7 +7,9 @@ var React = require('react'),
     room = require('../emitters/room');
 
 function formatDistance(d) {
-    if (d < 1e3) {
+	if (!d) {
+		return 'N/A';
+	} else if (d < 1e3) {
         return d.toFixed(0) + 'm';
     } else if (d < 1e6) {
         return (d * 1e-3).toFixed(2) + 'km';
@@ -81,15 +83,9 @@ module.exports = React.createClass({
         if (!remotes.length) {
             return <Message/>;
         }
-        console.log(localPosition);
-        console.log(remotes);
         var distances = remotes.map(item => geo.toMetrs(localPosition, item.position));
-
-        /*
-        var distance = geo.toMetrs(s.local, remote),
-            ids = Object.keys(s.remote);
-            distance = formatDistance(distance);
-         */
+        console.log(remotes);
+        var minDistance = formatDistance(Math.min.apply(null, distances));
 
         return <div className="full-screen">
             <div className="full-screen__top">
@@ -108,7 +104,7 @@ module.exports = React.createClass({
                         return <Compas local={localPosition} remote={remote} color={colorOrder[index]} />;
                     })}
                 </div>
-                <div className="distance">{Math.min.apply(null, distances)}</div>
+                <div className="distance">{minDistance}</div>
             </div>
         </div>;
     }
