@@ -13,7 +13,8 @@
     "socket.io-client": "^1.3.5"
   },
   "scripts": {
-    "start": "node --harmony server.js"
+    "start": "node --harmony server.js",
+    "postinstall": "gulp build"
   },
   "engines": {
     "node": "0.12.5"

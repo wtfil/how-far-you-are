@@ -56,3 +56,4 @@ gulp.task('server', function () {
 });
 
 gulp.task('dev', ['server', 'js-watch']);
+gulp.task('build', ['js']);
