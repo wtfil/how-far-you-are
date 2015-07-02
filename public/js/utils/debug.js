@@ -1,7 +1,7 @@
 var start = Date.now(),
 	join = [].join,
 	S = 1000,
-	M = S * 60; 
+	M = S * 60;
 
 function formatTime(ms) {
 	if (ms < S) {

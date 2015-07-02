@@ -3,6 +3,7 @@ var React = require('react'),
     Address = require('./address'),
     Compas = require('./compas'),
     geo = require('../emitters/geo-location'),
+    profile = require('../emitters/profile'),
     room = require('../emitters/room');
 
 function formatDistance(d) {
@@ -50,10 +51,10 @@ var Message = React.createClass({
     }
 });
 
-module.exports =  React.createClass({
+module.exports = React.createClass({
 
     mixins: [ReactEmitterMixin],
-    emitters: [room],
+    emitters: [room, geo, profile],
 
     getInitialState: function () {
         return {
@@ -63,46 +64,51 @@ module.exports =  React.createClass({
     },
 
     componentDidMount: function () {
-        room.join(this.props.id);
+        room.join(this.props.params.id);
     },
 
     componentDidUnmount: function () {
-        room.left(this.props.id);
+        room.leave(this.props.params.id);
     },
 
     render: function () {
-        var s = room.getMembers(),
-            remote = s.remote[Object.keys(s.remote)[0]];
+        var remotes = room.getMembers();
+        var localPosition = geo.getPosition();
 
         if (this.errors) {
         	return <Message error text={this.errors[0].message} />;
         }
-        //TODO make better
-        if (!s.local || !remote) {
+        if (!remotes.length) {
             return <Message/>;
         }
+        console.log(localPosition);
+        console.log(remotes);
+        var distances = remotes.map(item => geo.toMetrs(localPosition, item.position));
 
+        /*
         var distance = geo.toMetrs(s.local, remote),
             ids = Object.keys(s.remote);
             distance = formatDistance(distance);
+         */
 
         return <div className="full-screen">
             <div className="full-screen__top">
-            {ids.map(function (id, index) {
-                var remote = s.remote[id];                              
+            {remotes.map((remote, index) => {
                 return <Address color={colorOrder[index]} address={remote.address} userName={remote.userName}/>;
             })}
             </div>
-            <div className="full-screen__bottom">
-                <Address color="#3399FF" address={s.local.address} userName={s.local.userName}/>
-            </div>
+            {localPosition && localPosition.address &&
+            	<div className="full-screen__bottom">
+                	<Address color="#3399FF" address={localPosition.address} userName={profile.getName()}/>
+            	</div>
+            }
             <div className="position in-center">
                 <div>
-                    {ids.map(function (id, index) {
-                        return <Compas local={s.local} remote={s.remote[id]} color={colorOrder[index]} />;
+                    {remotes.map((remote, index) => {
+                        return <Compas local={localPosition} remote={remote} color={colorOrder[index]} />;
                     })}
                 </div>
-                <div className="distance">{distance}</div>
+                <div className="distance">{Math.min.apply(null, distances)}</div>
             </div>
         </div>;
     }

@@ -60,7 +60,7 @@ module.exports = React.createClass({
     },
 
     componentWillUnmount: function () {
-        compas.off('alpha', this._onCompas);
+        compas.removeListener('alpha', this._onCompas);
     },
 
     render: function () {

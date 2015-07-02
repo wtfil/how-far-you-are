@@ -11,6 +11,9 @@ var options = {
 };
 
 function toMetrs(coordsA, coordsB) {
+	if (!coordsA || !coordsB) {
+		return 9999;
+	}
     var dlat = (coordsA.latitude - coordsB.latitude) * TO_RAD,
         dlng = (coordsA.longitude - coordsB.longitude) * TO_RAD;
 
