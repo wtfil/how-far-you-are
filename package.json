@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "node --harmony server.js",
-    "postinstall": "gulp build"
+    "postinstall": "npm run build",
+    "build": "gulp build"
   },
   "engines": {
     "node": "0.12.5"
