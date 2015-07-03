@@ -7,7 +7,6 @@ var React = require('react'),
     room = require('../emitters/room');
 
 function formatDistance(d) {
-	return null;
 	if (!d) {
 		return null;
 	} else if (d < 1e3) {
