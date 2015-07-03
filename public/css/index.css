@@ -130,9 +130,10 @@ body, html, .app
     border-radius: 50px;
     background: #00d55a;
     color: white;
-    text-align: center;
-    line-height: 100px;
     font-size: 24px;
+    display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .compas
 {

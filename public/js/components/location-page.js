@@ -7,8 +7,9 @@ var React = require('react'),
     room = require('../emitters/room');
 
 function formatDistance(d) {
+	return null;
 	if (!d) {
-		return 'N/A';
+		return null;
 	} else if (d < 1e3) {
         return d.toFixed(0) + 'm';
     } else if (d < 1e6) {
@@ -103,7 +104,7 @@ module.exports = React.createClass({
                         return <Compas local={localPosition} remote={remote.position} color={colorOrder[index]} />;
                     })}
                 </div>
-                <div className="distance">{minDistance}</div>
+                <div className="distance">{minDistance || 'Wait'}</div>
             </div>
         </div>;
     }
