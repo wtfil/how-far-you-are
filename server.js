@@ -23,7 +23,7 @@ io.on('connection', function (socket) {
 	socket.on('join', function (data) {
 		socket.join(data.id);
 		set(socket, {name: '<username>'});
-		sync(socket, true);
+		sync(socket);
 	});
 	socket.on('leave', function (data) {
 		socket.leave(data.id);
@@ -44,14 +44,14 @@ io.on('connection', function (socket) {
 
 function set(socket, params) {
 	if (!socket.user) {
-		socket.user = {};
+		socket.user = {id: socket.id};
 	}
 	var key;
 	for (key in params) {
 		socket.user[key] = params[key];
 	}
 }
-function sync(socket, isLoopback) {
+function sync(socket) {
 	var rooms = socket.adapter.rooms;
 	var roomId = Object.keys(rooms).reduce(function (a, b) {
 		if (b !== socket.id && rooms[b][socket.id]) {
@@ -60,18 +60,11 @@ function sync(socket, isLoopback) {
 		return a;
 	}, null);
 	var room = rooms[roomId];
-	var users = Object.keys(room)
-		.filter(function (item) {
-			return item !== socket.id;
-		})
-		.map(function (id) {
-			return io.sockets.adapter.nsp.connected[id].user;
-		});
-	if (isLoopback) {
-		socket.emit('sync', users);
-	} else {
-		socket.broadcast.emit('sync', users);
-	}
+	var users = Object.keys(room).map(function (id) {
+		return io.sockets.adapter.nsp.connected[id].user;
+	});
+	socket.broadcast.emit('sync', users);
+	socket.emit('sync', users);
 }
 
 server.listen(Number(process.env.PORT || 3000));

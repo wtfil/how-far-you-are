@@ -1,8 +1,9 @@
-var EventEmitter = require('events').EventEmitter,
-    emitter = new EventEmitter(),
-    R = 6378137,
-    TO_RAD = Math.PI / 180,
-    last = null;
+var {EventEmitter} = require('events');
+var emitter = new EventEmitter();
+var R = 6378137;
+var TO_RAD = Math.PI / 180;
+var last = {};
+var debug = require('../utils/debug');
 
 var options = {
     enableHighAccuracy: false,
@@ -53,20 +54,25 @@ function watch(handler) {
     navigator.geolocation.watchPosition(function (p) {
         handler(p.coords);
     }, function (e) {
-        emitter.emit('error', new Error('Seems that geolocation does not work'));
+		debug('Geolocation error: ' + e.message, 'retring');
+    	setTimeout(function () {
+    		watch(handler);
+    	}, 100);
     }, options);
 }
 
 
 watch(function (coords) {
+    last.latitude = coords.latitude;
+    last.longitude = coords.longitude;
+
+    emitter.emit('position', last);
+    emitter.emit('change');
+
     geocode(coords, function (address) {
-        last = {
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-            address: address
-        };
-        emitter.emit('position', last);
-        emitter.emit('change');
+		last.address = address;
+    	emitter.emit('position', last);
+    	emitter.emit('change');
     });
 });
 

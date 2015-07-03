@@ -20,7 +20,7 @@ function getMembers() {
 geo.on('position', socket.emit.bind(socket, 'position'));
 profile.on('name', socket.emit.bind(socket, 'username'));
 socket.on('sync', data => {
-    remote = data;
+    remote = data.filter(item => item.id !== socket.id);
     emitter.emit('change');
 });
 

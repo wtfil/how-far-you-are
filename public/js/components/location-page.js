@@ -84,7 +84,6 @@ module.exports = React.createClass({
             return <Message/>;
         }
         var distances = remotes.map(item => geo.toMetrs(localPosition, item.position));
-        console.log(remotes);
         var minDistance = formatDistance(Math.min.apply(null, distances));
 
         return <div className="full-screen">

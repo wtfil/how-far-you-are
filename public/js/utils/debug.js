@@ -1,5 +1,5 @@
 var start = Date.now(),
-	join = [].join,
+	slice = [].slice,
 	S = 1000,
 	M = S * 60;
 
@@ -15,8 +15,7 @@ function formatTime(ms) {
 
 module.exports = function () {
 	var time = formatTime(Date.now() - start);
-	var message = '[' + time + '] ' +
-		join.call(arguments, ', ');
-
-	console.log(message);
+	var args = slice.call(arguments);
+	args.unshift('[' + time + ']');
+	console.log.apply(console, args);
 };
