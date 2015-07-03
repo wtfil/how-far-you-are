@@ -100,7 +100,7 @@ module.exports = React.createClass({
             <div className="position in-center">
                 <div>
                     {remotes.map((remote, index) => {
-                        return <Compas local={localPosition} remote={remote} color={colorOrder[index]} />;
+                        return <Compas local={localPosition} remote={remote.position} color={colorOrder[index]} />;
                     })}
                 </div>
                 <div className="distance">{minDistance}</div>
